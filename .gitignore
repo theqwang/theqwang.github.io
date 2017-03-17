@@ -1,0 +1,4 @@
+# npm init can create node_modules/
+# hexo g can create public/
+node_modules/
+public/
