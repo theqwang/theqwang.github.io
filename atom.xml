@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://theqwang.github.io/"/>
-  <updated>2017-03-17T09:05:37.908Z</updated>
+  <updated>2017-03-17T09:21:05.134Z</updated>
   <id>https://theqwang.github.io/</id>
   
   <author>
@@ -20,15 +20,15 @@
     <link href="https://theqwang.github.io/2017/03/17/%E5%9C%A8%E5%A4%9A%E5%8F%B0%E7%94%B5%E8%84%91%E9%97%B4%E4%BD%BF%E7%94%A8hexo/"/>
     <id>https://theqwang.github.io/2017/03/17/在多台电脑间使用hexo/</id>
     <published>2017-03-17T03:25:03.000Z</published>
-    <updated>2017-03-17T09:05:37.908Z</updated>
+    <updated>2017-03-17T09:21:05.134Z</updated>
     
     <content type="html"><![CDATA[<p>背景：<br>这个博客最初是还在学校的时候，使用 <code>hexo + github pages</code> 构建，代码都在我的笔记本里。</p>
 <p>需求：<br>工作以后大部分时间都是在用办公室里的电脑，现在想在笔记本和办公室的电脑上都能用hexo写博客。</p>
 <p>思路：<br>通过 git 的分支实现。hexo 生成的静态博客文件默认放在 master 分支上，可以新创建一个 hexo 分支，把 hexo 的源文件都放在 hexo 分支上，换新电脑时，直接 git clone hexo 分支即可。<br><a id="more"></a></p>
-<h2 id="1-分析"><a href="#1-分析" class="headerlink" title="1.分析"></a>1.分析</h2><p>新建一个 hexo 分支，把 hexo 的源文件都放到这个分支上。但是源文件有70多M，并不需要把所有文件都放在分支上。<code>node_modules</code>目录可以用 <code>npm install</code> 命令生成，<code>public</code>目录可以使用 <code>hexo g</code> 命令生成，所以可以把这两个目录放在 <code>.gitignore</code> 里忽略提交。</p>
+<h2 id="1-分析"><a href="#1-分析" class="headerlink" title="1.分析"></a>1.分析</h2><p>新建一个 hexo 分支，把 hexo 的源文件都放到这个分支上。但是源文件有70多M，并不需要把所有文件都放在分支上。<code>node_modules</code>目录可以用 <code>npm install</code> 命令生成，<code>public</code>目录可以使用 <code>hexo g</code> 命令生成，<code>.deploy_git</code>目录是<code>hexo d</code>命令生成，所以可以把这三个目录放在 <code>.gitignore</code> 里忽略提交。</p>
 <h2 id="2-操作"><a href="#2-操作" class="headerlink" title="2.操作"></a>2.操作</h2><h4 id="在原来的笔记本上："><a href="#在原来的笔记本上：" class="headerlink" title="在原来的笔记本上："></a>在原来的笔记本上：</h4><p>1.创建新的分支 hexo 并切换到这个分支上。</p>
 <p>2.在博客的目录下创建 <code>.gitignore</code> 文件，在文件里写入：</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node_modules/</div><div class="line"><span class="keyword">public</span>/</div></pre></td></tr></table></figure>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">node_modules/</div><div class="line"><span class="meta">public</span>/</div><div class="line"><span class="meta">.deploy_git</span>/</div></pre></td></tr></table></figure>
 <p>3.在 hexo 分支下，git add、git commit 提交所有文件，最后把 hexo 分支 push 到 github 上。这时 github 上有两个分支：master 和 hexo，master 分支是博客的静态文件，hexo 分支是博客的源代码。</p>
 <h4 id="在新电脑上："><a href="#在新电脑上：" class="headerlink" title="在新电脑上："></a>在新电脑上：</h4><p>1.安装 git。在 git bash 下输入以下命令配置用户名和邮箱，邮箱是自己 github 账号的邮箱：</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user<span class="selector-class">.name</span> <span class="string">"Your Name"</span></div><div class="line">git config --global user<span class="selector-class">.email</span> <span class="string">"email@example.com"</span></div></pre></td></tr></table></figure>
