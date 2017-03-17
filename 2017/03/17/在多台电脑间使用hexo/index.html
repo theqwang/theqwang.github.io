@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在多台电脑间使用hexo | theqwang&#39;blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="背景：这个博客最初是还在学校的时候，使用 hexo + github pages 构建，代码都在我的笔记本里。
+需求：工作以后大部分时间都是在用办公室里的电脑，现在想在笔记本和办公室的电脑上都能用hexo写博客。
+思路：通过 git 的分支实现。hexo 生成的静态博客文件默认放在 master 分支上，可以新创建一个 hexo 分支，把 hexo 的源文件都放在 hexo 分支上，换新电脑时，直">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在多台电脑间使用hexo">
+<meta property="og:url" content="https://theqwang.github.io/2017/03/17/在多台电脑间使用hexo/index.html">
+<meta property="og:site_name" content="theqwang'blog">
+<meta property="og:description" content="背景：这个博客最初是还在学校的时候，使用 hexo + github pages 构建，代码都在我的笔记本里。
+需求：工作以后大部分时间都是在用办公室里的电脑，现在想在笔记本和办公室的电脑上都能用hexo写博客。
+思路：通过 git 的分支实现。hexo 生成的静态博客文件默认放在 master 分支上，可以新创建一个 hexo 分支，把 hexo 的源文件都放在 hexo 分支上，换新电脑时，直">
+<meta property="og:updated_time" content="2017-03-17T09:05:37.908Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在多台电脑间使用hexo">
+<meta name="twitter:description" content="背景：这个博客最初是还在学校的时候，使用 hexo + github pages 构建，代码都在我的笔记本里。
+需求：工作以后大部分时间都是在用办公室里的电脑，现在想在笔记本和办公室的电脑上都能用hexo写博客。
+思路：通过 git 的分支实现。hexo 生成的静态博客文件默认放在 master 分支上，可以新创建一个 hexo 分支，把 hexo 的源文件都放在 hexo 分支上，换新电脑时，直">
+  
+    <link rel="alternative" href="/atom.xml" title="theqwang&#39;blog" type="application/atom+xml">
+  
+  
+    <link href="/favicon.ico" rel="icon" type="image/x-ico">
+  
+  <link href="//fonts.useso.com/css?family=Lato:400,400italic" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">theqwang&#39;blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">about</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://theqwang.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-在多台电脑间使用hexo" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/17/在多台电脑间使用hexo/" class="article-date">
+  <time datetime="2017-03-17T03:25:03.000Z" itemprop="datePublished">2017-03-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/hexo/">hexo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      在多台电脑间使用hexo
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>背景：<br>这个博客最初是还在学校的时候，使用 <code>hexo + github pages</code> 构建，代码都在我的笔记本里。</p>
+<p>需求：<br>工作以后大部分时间都是在用办公室里的电脑，现在想在笔记本和办公室的电脑上都能用hexo写博客。</p>
+<p>思路：<br>通过 git 的分支实现。hexo 生成的静态博客文件默认放在 master 分支上，可以新创建一个 hexo 分支，把 hexo 的源文件都放在 hexo 分支上，换新电脑时，直接 git clone hexo 分支即可。<br><a id="more"></a></p>
+<h2 id="1-分析"><a href="#1-分析" class="headerlink" title="1.分析"></a>1.分析</h2><p>新建一个 hexo 分支，把 hexo 的源文件都放到这个分支上。但是源文件有70多M，并不需要把所有文件都放在分支上。<code>node_modules</code>目录可以用 <code>npm install</code> 命令生成，<code>public</code>目录可以使用 <code>hexo g</code> 命令生成，所以可以把这两个目录放在 <code>.gitignore</code> 里忽略提交。</p>
+<h2 id="2-操作"><a href="#2-操作" class="headerlink" title="2.操作"></a>2.操作</h2><h4 id="在原来的笔记本上："><a href="#在原来的笔记本上：" class="headerlink" title="在原来的笔记本上："></a>在原来的笔记本上：</h4><p>1.创建新的分支 hexo 并切换到这个分支上。</p>
+<p>2.在博客的目录下创建 <code>.gitignore</code> 文件，在文件里写入：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node_modules/</div><div class="line"><span class="keyword">public</span>/</div></pre></td></tr></table></figure>
+<p>3.在 hexo 分支下，git add、git commit 提交所有文件，最后把 hexo 分支 push 到 github 上。这时 github 上有两个分支：master 和 hexo，master 分支是博客的静态文件，hexo 分支是博客的源代码。</p>
+<h4 id="在新电脑上："><a href="#在新电脑上：" class="headerlink" title="在新电脑上："></a>在新电脑上：</h4><p>1.安装 git。在 git bash 下输入以下命令配置用户名和邮箱，邮箱是自己 github 账号的邮箱：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user<span class="selector-class">.name</span> <span class="string">"Your Name"</span></div><div class="line">git config --global user<span class="selector-class">.email</span> <span class="string">"email@example.com"</span></div></pre></td></tr></table></figure>
+<p>2.执行以下命令生成 SSH key：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">ssh-keygen</span> <span class="selector-tag">-t</span> <span class="selector-tag">rsa</span> <span class="selector-tag">-C</span> "<span class="selector-tag">youremail</span>@<span class="keyword">example</span>.<span class="keyword">com</span>"</div></pre></td></tr></table></figure>
+<p>其中 <code>youremail@example.com</code> 是你的 github 邮箱，剩下的一路回车即可。最后会在用户主目录下生成一个 <code>.ssh</code> 目录，该目录下有 <code>id_rsa</code> 和 <code>id_rsa.pub</code> 两个文件，这两个文件就是 SSH 的密钥对，<code>id_rsa</code> 是私钥，<code>id_rsa.pub</code> 是公钥。</p>
+<p>3.登录 github，在 settings 里找到 SSH and GPG keys，创建新的 SSH key，title 可以是任意值，key 文本框里粘贴 id_rsa.pub 里的内容，最后保存。</p>
+<p>4.安装 Node.js。在 git bash 里输入以下命令安装 hexo：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-<span class="keyword">cli</span> -g</div></pre></td></tr></table></figure>
+<p>5.新建博客目录，在该目录打开 git bash，执行：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">git init</span></div></pre></td></tr></table></figure>
+<p>初始化该目录。</p>
+<p>6.使用 git clone 把 github 上的 hexo 分支复制到博客目录。指明如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone -<span class="selector-tag">b</span> hexo git@github<span class="selector-class">.com</span>:xxx/xxx<span class="selector-class">.github</span><span class="selector-class">.io</span><span class="selector-class">.git</span></div></pre></td></tr></table></figure>
+<p><strong>注意默认 git clone 命令只会复制 master 分支，这里需要用 -b 指明只克隆 hexo 分支。因为源代码都放在了hexo分支上，并不需要对master分支进行操作。</strong></p>
+<p>7.克隆完以后，执行 </p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm <span class="keyword">install</span></div></pre></td></tr></table></figure>
+<p>安装所有依赖（生成 <code>node_modules</code> 目录）。</p>
+<p>8.执行</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">hexo g</span></div></pre></td></tr></table></figure>
+<p>生成博客的静态文件（即 <code>public</code> 目录）</p>
+<p>9.执行</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo <span class="keyword">new</span> <span class="type">post</span> <span class="string">"文章标题"</span></div></pre></td></tr></table></figure>
+<p>创建新文章，然后可以在 <code>source/_posts/</code> 目录下找到对应的文章并可以编辑。</p>
+<p>10.执行</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">hexo s</span></div></pre></td></tr></table></figure>
+<p>运行 hexo 服务器，在浏览器中打开 <a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a> 查看博客是否已经可以运行。</p>
+<p>11.执行</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">hexo d</span></div></pre></td></tr></table></figure>
+<p>可以把博客的静态文件部署到 github 上。</p>
+<p><strong>注意在 _config.yml 中 deploy 的 branch 值必须为 master，指明 hexo d 命令是把博客静态文件推到 master 分支上。</strong></p>
+<p>12.最后把修改推到 github 上的 hexo 分支：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">add</span><span class="bash"> .</span></div><div class="line">git commit -m <span class="string">"commit message"</span></div><div class="line">git push origin hexo</div></pre></td></tr></table></figure>
+<p><strong>注意：以上所有操作都是在 hexo分支下操作的。</strong></p>
+<h2 id="3-日常操作流程"><a href="#3-日常操作流程" class="headerlink" title="3.日常操作流程"></a>3.日常操作流程</h2><p>1.换到不同电脑上时，首先拉下 github 上的 hexo分支的更新：<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">git pull origin hexo</span></div></pre></td></tr></table></figure></p>
+<p>2.编写、修改博客，并使用 <code>hexo d</code> 命令部署。</p>
+<p>3.把对文件的修改推送到 github 的hexo分支上：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">add</span><span class="bash"> .</span></div><div class="line">git commit -m <span class="string">"commit message"</span></div><div class="line">git push origin hexo</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://theqwang.github.io/2017/03/17/在多台电脑间使用hexo/" data-id="cj0dlnmjm0006xcml0je9oajk" class="article-share-link">Share</a>
+      
+        <a href="https://theqwang.github.io/2017/03/17/在多台电脑间使用hexo/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/03/17/《高性能网站建设进阶指南》总结/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《高性能网站建设进阶指南》总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CSS/">CSS</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优化/">优化</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/03/17/在多台电脑间使用hexo/">在多台电脑间使用hexo</a>
+          </li>
+        
+          <li>
+            <a href="/2016/03/17/《高性能网站建设进阶指南》总结/">《高性能网站建设进阶指南》总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/01/SASS入门/">SASS学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/08/不使用-border-radius-实现圆角/">不使用 border-radius 实现圆角</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/08/浅析圣杯布局和双飞翼布局/">浅析圣杯布局和双飞翼布局</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 theqwang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'theqwang';
+  
+  var disqus_url = 'https://theqwang.github.io/2017/03/17/在多台电脑间使用hexo/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

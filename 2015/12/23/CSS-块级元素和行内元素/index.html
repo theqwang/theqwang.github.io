@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>CSS块级元素和行内元素 | theqwang&#39;blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="块级元素block在视觉上显示为一个块的元素，最明显的特征就是它默认横向充满父元素的内容区域，即默认独占一行。典型的块元素有div、p、h1~h6等。
+特点：
+
+每个块级元素独占一行。
+块级元素的height、width、padding、border、margin都可以设置。
+块级元素在默认情况下，width是父元素的100%。
+可以容纳其他块级元素和内联元素。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS块级元素和行内元素">
+<meta property="og:url" content="https://theqwang.github.io/2015/12/23/CSS-块级元素和行内元素/index.html">
+<meta property="og:site_name" content="theqwang'blog">
+<meta property="og:description" content="块级元素block在视觉上显示为一个块的元素，最明显的特征就是它默认横向充满父元素的内容区域，即默认独占一行。典型的块元素有div、p、h1~h6等。
+特点：
+
+每个块级元素独占一行。
+块级元素的height、width、padding、border、margin都可以设置。
+块级元素在默认情况下，width是父元素的100%。
+可以容纳其他块级元素和内联元素。">
+<meta property="og:updated_time" content="2017-03-11T22:03:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSS块级元素和行内元素">
+<meta name="twitter:description" content="块级元素block在视觉上显示为一个块的元素，最明显的特征就是它默认横向充满父元素的内容区域，即默认独占一行。典型的块元素有div、p、h1~h6等。
+特点：
+
+每个块级元素独占一行。
+块级元素的height、width、padding、border、margin都可以设置。
+块级元素在默认情况下，width是父元素的100%。
+可以容纳其他块级元素和内联元素。">
+  
+    <link rel="alternative" href="/atom.xml" title="theqwang&#39;blog" type="application/atom+xml">
+  
+  
+    <link href="/favicon.ico" rel="icon" type="image/x-ico">
+  
+  <link href="//fonts.useso.com/css?family=Lato:400,400italic" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">theqwang&#39;blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">about</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://theqwang.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CSS-块级元素和行内元素" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/12/23/CSS-块级元素和行内元素/" class="article-date">
+  <time datetime="2015-12-23T11:52:03.000Z" itemprop="datePublished">2015-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CSS/">CSS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CSS块级元素和行内元素
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="块级元素block"><a href="#块级元素block" class="headerlink" title="块级元素block"></a>块级元素block</h2><p>在视觉上显示为一个块的元素，最明显的特征就是它默认横向充满父元素的内容区域，即默认独占一行。典型的块元素有div、p、h1~h6等。</p>
+<p>特点：</p>
+<ol>
+<li>每个块级元素独占一行。</li>
+<li>块级元素的height、width、padding、border、margin都可以设置。</li>
+<li>块级元素在默认情况下，width是父元素的100%。</li>
+<li>可以容纳其他块级元素和内联元素。</li>
+</ol>
+<a id="more"></a>
+<h2 id="行内元素inline"><a href="#行内元素inline" class="headerlink" title="行内元素inline"></a>行内元素inline</h2><p>行内元素不独占一行，其左右可以有其他行内元素。例如a、span、strong等。</p>
+<p>特点：</p>
+<ol>
+<li>和相邻行内元素都在一行上。直到一行排不下才会换行。</li>
+<li>行内元素的宽度和高度就是其容纳的内容的宽高，在行内元素上设置width、height无效。</li>
+<li>垂直方向上的padding、border、margin不会产生边距效果，水平方向上的padding、border、margin可以影响元素的水平间距(布局)。</li>
+<li>设置line-height 可以改变行内元素的高度。</li>
+</ol>
+<p><strong>注意：</strong><br>行内元素设置padding，border在应用背景图片的时候会有显示，但是不改变垂直方向的布局，对于设置了background-color背景和padding的行内元素，背景可以向元素上面和下面延伸，但是不会改变行高，结果会出现设置后padding，border的背景会覆盖上面的元素的内容，下部被当做背景，被下级元素覆盖。(《CSS权威指南》P249)</p>
+<p>margin水平方向起作用，垂直方向不起作用，原因在于：行内元素的外边距不会改变元素的行高。（《CSS权威指南》P227）</p>
+<p>可以点击如下demo查看：<a href="http://codepen.io/theqwang/pen/obLKxg" target="_blank" rel="external">demo</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://theqwang.github.io/2015/12/23/CSS-块级元素和行内元素/" data-id="cj0dlnmje0002xcmlns0jfkd4" class="article-share-link">Share</a>
+      
+        <a href="https://theqwang.github.io/2015/12/23/CSS-块级元素和行内元素/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/01/07/两列布局分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          两列布局分析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/12/22/在django中把文件上传至七牛/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">在django中把文件上传至七牛</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CSS/">CSS</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优化/">优化</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/03/17/在多台电脑间使用hexo/">在多台电脑间使用hexo</a>
+          </li>
+        
+          <li>
+            <a href="/2016/03/17/《高性能网站建设进阶指南》总结/">《高性能网站建设进阶指南》总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/01/SASS入门/">SASS学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/08/不使用-border-radius-实现圆角/">不使用 border-radius 实现圆角</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/08/浅析圣杯布局和双飞翼布局/">浅析圣杯布局和双飞翼布局</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 theqwang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'theqwang';
+  
+  var disqus_url = 'https://theqwang.github.io/2015/12/23/CSS-块级元素和行内元素/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
