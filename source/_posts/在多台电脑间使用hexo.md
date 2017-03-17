@@ -14,7 +14,7 @@ tags:
 <!--more-->
 
 ## 1.分析
-新建一个 hexo 分支，把 hexo 的源文件都放到这个分支上。但是源文件有70多M，并不需要把所有文件都放在分支上。`node_modules`目录可以用 `npm install` 命令生成，`public`目录可以使用 `hexo g` 命令生成，所以可以把这两个目录放在 `.gitignore` 里忽略提交。
+新建一个 hexo 分支，把 hexo 的源文件都放到这个分支上。但是源文件有70多M，并不需要把所有文件都放在分支上。`node_modules`目录可以用 `npm install` 命令生成，`public`目录可以使用 `hexo g` 命令生成，`.deploy_git`目录是`hexo d`命令生成，所以可以把这三个目录放在 `.gitignore` 里忽略提交。
 
 ## 2.操作
 
@@ -27,6 +27,7 @@ tags:
 ```
 node_modules/
 public/
+.deploy_git/
 ```
 
 3.在 hexo 分支下，git add、git commit 提交所有文件，最后把 hexo 分支 push 到 github 上。这时 github 上有两个分支：master 和 hexo，master 分支是博客的静态文件，hexo 分支是博客的源代码。
