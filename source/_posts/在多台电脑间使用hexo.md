@@ -4,13 +4,13 @@ categories: hexo
 tags:
 ---
 背景：
-这个博客最初是还在学校的时候，使用 hexo + github pages 构建，代码都在我的笔记本里。
+这个博客最初是还在学校的时候，使用 `hexo + github pages` 构建，代码都在我的笔记本里。
 
 需求：
 工作以后大部分时间都是在用办公室里的电脑，现在想在笔记本和办公室的电脑上都能用hexo写博客。
 
 思路：
-通过git的分支实现。hexo 生成的静态博客文件默认放在 master 分支上，可以新创建一个 hexo 分支，把 hexo 的源文件都放在 hexo 分支上，换新电脑时，直接 git clone hexo 分支即可。
+通过 git 的分支实现。hexo 生成的静态博客文件默认放在 master 分支上，可以新创建一个 hexo 分支，把 hexo 的源文件都放在 hexo 分支上，换新电脑时，直接 git clone hexo 分支即可。
 <!--more-->
 
 ## 1.分析
