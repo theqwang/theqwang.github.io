@@ -30,7 +30,7 @@
   
     <link href="/favicon.ico" rel="icon" type="image/x-ico">
   
-  <link href="//fonts.useso.com/css?family=Lato:400,400italic" rel="stylesheet" type="text/css">
+<!--   <link href="//fonts.useso.com/css?family=Lato:400,400italic" rel="stylesheet" type="text/css"> -->
   <link rel="stylesheet" href="/css/style.css">
   
 
@@ -109,7 +109,7 @@
 <h2 id="2-自动编译"><a href="#2-自动编译" class="headerlink" title="2. 自动编译"></a>2. 自动编译</h2><p>还可以在命令行下使用 sass –watch 命令自动监视 sass 文件的变化并编译。例子：</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sass --watch <span class="selector-tag">input</span><span class="selector-class">.css</span>:output.css</div></pre></td></tr></table></figure>
 <p>也可以自动监视整个目录的变化并自动编译：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">sass</span> <span class="selector-tag">--watch</span> .<span class="selector-pseudo">:.</span></div></pre></td></tr></table></figure>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sass <span class="comment">--watch .:.</span></div></pre></td></tr></table></figure>
 <p>默认自动编译生成的 css 文件与 sass 文件同名。</p>
 <h1 id="三、输出样式"><a href="#三、输出样式" class="headerlink" title="三、输出样式"></a>三、输出样式</h1><p>sass 编译输出的 css 文件有四种样式：</p>
 <ul>
@@ -143,7 +143,7 @@
 <p> mixin 类似于javascript中的函数，mixin 有名字和参数，参数可以省略，定义 mixin 的格式如下：</p>
  <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">mixin</span> 名字 (参数<span class="number">1</span>，参数<span class="number">2</span>...) <span class="meta">&#123;......&#125;</span></div></pre></td></tr></table></figure>
 <p> 引用 mixin 时使用如下写法：</p>
- <figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">include</span> mixin的名字;</div></pre></td></tr></table></figure>
+ <figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@<span class="meta"><span class="meta-keyword">include</span> mixin的名字;</span></div></pre></td></tr></table></figure>
 <p> mixin 中的参数写法与 sass 变量写法一样，变量的赋值既可以按形参顺序赋值，也可以按参数名赋值，sass 允许通过语法 $name: value 的形式指定每个参数的值。。来看一个具体的例子：</p>
  <figure class="highlight scss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">mixin</span> alert (<span class="variable">$text-color</span>, <span class="variable">$background</span>) &#123;</div><div class="line"> <span class="attribute">color</span>: <span class="variable">$text-color</span>;</div><div class="line"> <span class="attribute">background-color</span>: <span class="variable">$background</span>;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.alert-warning</span> &#123;</div><div class="line"> @<span class="keyword">include</span> alert(<span class="number">#333</span>, <span class="number">#fff</span>lert &#123;</div><div class="line">	 <span class="attribute">padding</span>: <span class="number">15px</span>;</div><div class="line"> &#125;</div><div class="line"> <span class="selector-class">.alert</span> <span class="selector-tag">a</span> &#123;</div><div class="line">	 <span class="attribute">font-size</span>: <span class="number">20px</span>;</div><div class="line"> &#125;</div><div class="line"> <span class="selector-class">.alert-info</span> &#123;</div><div class="line">	 @<span class="keyword">extend</span> .alert;</div><div class="line">	 <span class="attribute">background-color</span>: <span class="number">#FFF</span>;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
 <pre><code>生成如下的 css：
@@ -286,7 +286,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://theqwang.github.io/2016/02/01/SASS入门/" data-id="cj0dm7vlk000ducmlcct9gbra" class="article-share-link">Share</a>
+      <a data-url="https://theqwang.github.io/2016/02/01/SASS入门/" data-id="cj64c4h6y0004ngmlaafdpxsy" class="article-share-link">Share</a>
       
         <a href="https://theqwang.github.io/2016/02/01/SASS入门/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -331,7 +331,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CSS/">CSS</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优化/">优化</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CSS/">CSS</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优化/">优化</a><span class="category-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -340,7 +340,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -350,6 +350,10 @@
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/08/09/Linux系统下远程自动备份/">Linux系统下远程自动备份</a>
+          </li>
         
           <li>
             <a href="/2017/03/17/在多台电脑间使用hexo/">在多台电脑间使用hexo</a>
@@ -365,10 +369,6 @@
         
           <li>
             <a href="/2016/01/08/不使用-border-radius-实现圆角/">不使用 border-radius 实现圆角</a>
-          </li>
-        
-          <li>
-            <a href="/2016/01/08/浅析圣杯布局和双飞翼布局/">浅析圣杯布局和双飞翼布局</a>
           </li>
         
       </ul>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://theqwang.github.io/"/>
-  <updated>2017-03-17T09:21:05.134Z</updated>
+  <updated>2017-08-09T03:23:13.426Z</updated>
   <id>https://theqwang.github.io/</id>
   
   <author>
@@ -14,6 +14,68 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux系统下远程自动备份</title>
+    <link href="https://theqwang.github.io/2017/08/09/Linux%E7%B3%BB%E7%BB%9F%E4%B8%8B%E8%BF%9C%E7%A8%8B%E8%87%AA%E5%8A%A8%E5%A4%87%E4%BB%BD/"/>
+    <id>https://theqwang.github.io/2017/08/09/Linux系统下远程自动备份/</id>
+    <published>2017-08-09T00:32:40.000Z</published>
+    <updated>2017-08-09T03:23:13.426Z</updated>
+    
+    <content type="html"><![CDATA[<p>公司的两个网站都部署在阿里云上，这两个网站以文章展示为主，之前也没有做过数据备份。随着文章数量的增加，实现数据的自动备份也就越来越重要了。后来这个工作就落到了我的头上，也感谢这次机会，让我重新拾起了《鸟哥的Linux私房菜》，狠狠加强了一把我的Linux基础。<br><a id="more"></a></p>
+<h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h2><p>这里以自动备份网站的数据库和代码为例讲解我的实现思路。<br>要备份的网站部署在了阿里云服务器上，简称该服务器为A；备份服务器是我们公司的一台物理机，简称为B，备份的数据都要统一放在B上。</p>
+<h2 id="2-备份思路"><a href="#2-备份思路" class="headerlink" title="2.备份思路"></a>2.备份思路</h2><ol>
+<li>使用<strong>SSH</strong>实现主机B到A的免密码登录</li>
+<li>使用<strong>rsync</strong>实现代码的增量备份</li>
+<li>使用<strong>mysqldump+tar</strong>备份数据库，再通过<strong>scp</strong>把备份的数据库文件从A拷贝到备份主机B的指定位置并按时间命名，保留5天之内的数据库备份文件其余删除</li>
+<li>使用<strong>crontab</strong>实现定时备份</li>
+</ol>
+<h2 id="3-备份频率"><a href="#3-备份频率" class="headerlink" title="3. 备份频率"></a>3. 备份频率</h2><ul>
+<li>数据库每天备份一次，备份的时间点是每天<code>2:00</code></li>
+<li>代码每周备份一次，备份的时间点是每周的星期天<code>3:00</code></li>
+</ul>
+<h2 id="4-SSH免密码登录"><a href="#4-SSH免密码登录" class="headerlink" title="4. SSH免密码登录"></a>4. SSH免密码登录</h2><p>要把主机A上的数据定时备份到主机B上，要先实现SSH免密码登录。具体步骤：</p>
+<p>1) 用root登录B，生成SSH密钥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen</div></pre></td></tr></table></figure>
+<p>执行完该命令后，会在<code>/root/.ssh</code>目录下生成<code>id-rsa</code>、<code>id-rsa.pub</code>，其中<code>id-rsa</code>是私钥文件，<code>id-rsa.pub</code>是公钥文件。</p>
+<p>2) 把<code>id-rsa.pub</code>上传到A上</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp /root/.ssh/id_rsa<span class="selector-class">.pub</span>  root@A<span class="selector-class">.com</span>:/root/id_rsa.pub</div></pre></td></tr></table></figure>
+<p>3) 把公钥内容附件到<code>authorized_keys</code>文件中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// authorized_keys的路径是：/root/.ssh/authorized_keys，如果路径不存在，需要执行以下命令创建。</div><div class="line"></div><div class="line">mkdir -p /root/.ssh</div><div class="line">chmod 700 /root/.ssh</div><div class="line">touch /root/.ssh/authorized_keys</div><div class="line">chmod 600 /root/.ssh/authorized_keys</div><div class="line">cat /root/id_rsa.pub &gt;&gt; /root/.ssh/authorized_keys</div></pre></td></tr></table></figure>
+<p>注意：因为涉及到权限的问题，在A上也使用root登录；请一定要给<code>.ssh</code>和<code>authorized_keys</code>设置700和600的权限，不然用SSH登录时还是需要密码</p>
+<p>4) 验证SSH免密码登录是否成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -v root@A</div></pre></td></tr></table></figure>
+<h2 id="5-增量备份代码"><a href="#5-增量备份代码" class="headerlink" title="5.增量备份代码"></a>5.增量备份代码</h2><p>使用<strong>rsync</strong>增量备份代码。假设A上部署的项目路径是<code>/wwwXXXcom</code>， 把A上的代码备份到B的<code>/data/backup_code</code>目录下，在该目录下新建备份脚本文件<code>backup_code.sh</code>，在该文件中写入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line">rsync -avz --delete -e ssh root@A:/wwwXXXcom /data/backup_code</div></pre></td></tr></table></figure>
+<p><code>--delete</code>参数表示如果A上的某文件删除了，备份时B上也会删除对应文件</p>
+<p>给<code>backup_code.sh</code>增加执行权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x backup_code.sh</div></pre></td></tr></table></figure>
+<h2 id="6-备份数据库"><a href="#6-备份数据库" class="headerlink" title="6.备份数据库"></a>6.备份数据库</h2><p>备份数据库的思路是首先在主机A上使用<strong>mysqldump+tar</strong>把数据库备份到本地，然后通过<strong>scp</strong>把备份文件拷贝到主机B上。</p>
+<h3 id="6-1-在主机A上备份数据库"><a href="#6-1-在主机A上备份数据库" class="headerlink" title="6.1 在主机A上备份数据库"></a>6.1 在主机A上备份数据库</h3><p>假设在主机A上，数据库备份文件放在<code>/backup_origin</code>目录下，在该目录下新建数据库备份脚本<code>backup_origin.sh</code>，文件中写入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line"># 删除之前的数据库备份文件</div><div class="line">find /backup_origin -name &quot;DB_name.sql.gz&quot; -type f -exec rm &#123;&#125; \; &gt; /dev/null 2&gt;&amp;1</div><div class="line"></div><div class="line"># 备份数据库</div><div class="line">mysqldump -uroot -ppassword DB_name | gzip &gt; /backup_origin/DB_name.sql.gz</div></pre></td></tr></table></figure>
+<p>给<code>backup_origin.sh</code>增加执行权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x backup_origin.sh</div></pre></td></tr></table></figure>
+<h3 id="6-2-把备份文件拷贝到主机B"><a href="#6-2-把备份文件拷贝到主机B" class="headerlink" title="6.2 把备份文件拷贝到主机B"></a>6.2 把备份文件拷贝到主机B</h3><p>假设数据库备份文件放在主机B的<code>/data/backup</code>目录下 ，在该目录下新建脚本文件<code>backup_DB.sh</code>，文件中写入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line">time=`date +%Y-%m-%d_%H:%M:%S`</div><div class="line"></div><div class="line"><span class="comment"># 通过SSH调用主机A上的数据库备份脚本</span></div><div class="line">/usr/bin/ssh root@A <span class="string">"/backup_origin/backup_origin.sh"</span></div><div class="line"></div><div class="line"><span class="comment"># 通过scp把A上新生成的数据库备份文件拷贝到B</span></div><div class="line">scp root@A:/backup_origin/DB_name.sql.gz /data/backup/DB_name<span class="variable">$time</span>.sql.gz</div><div class="line"></div><div class="line"><span class="comment"># 删除5天之前的备份文件</span></div><div class="line">find /data/backup -name <span class="string">"DB_name*.sql.gz"</span> -type f -mtime +5 -exec rm &#123;&#125; \; &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>给<code>backup_DB.sh</code>增加执行权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x backup_DB.sh</div></pre></td></tr></table></figure>
+<h2 id="7-定时备份"><a href="#7-定时备份" class="headerlink" title="7.定时备份"></a>7.定时备份</h2><p>使用<strong>crontab</strong>实现定时备份功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">crontab -e</div></pre></td></tr></table></figure>
+<p>在主机B上输入以上命令编辑<code>crontab</code>命令的内容，键入以下内容实现备份脚本的定时执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 备份数据库，每天2:00执行</div><div class="line">0 2 * * * bash /data/backup/backup_DB.sh</div><div class="line"></div><div class="line"># 备份项目代码，每周的周天3:00执行</div><div class="line">0 3 * * 0 bash /data/backup_code/backup_code.sh</div></pre></td></tr></table></figure>
+<h2 id="8-最后"><a href="#8-最后" class="headerlink" title="8. 最后"></a>8. 最后</h2><p>至此，我们就实现了数据的远程自动备份。但是，数据还不是绝对的安全，现在数据都备份到了主机B上，但是当主机B出现问题时，备份也就没有意义了。更近一步，可以在主机B上做<strong>RAID5</strong>或者把主机B上的备份数据上传到云上。条件所限，这些措施也就没有做，以后做了我会再来补充。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;公司的两个网站都部署在阿里云上，这两个网站以文章展示为主，之前也没有做过数据备份。随着文章数量的增加，实现数据的自动备份也就越来越重要了。后来这个工作就落到了我的头上，也感谢这次机会，让我重新拾起了《鸟哥的Linux私房菜》，狠狠加强了一把我的Linux基础。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="linux" scheme="https://theqwang.github.io/categories/linux/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>在多台电脑间使用hexo</title>
@@ -230,7 +292,7 @@
 <h2 id="2-自动编译"><a href="#2-自动编译" class="headerlink" title="2. 自动编译"></a>2. 自动编译</h2><p>还可以在命令行下使用 sass –watch 命令自动监视 sass 文件的变化并编译。例子：</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sass --watch <span class="selector-tag">input</span><span class="selector-class">.css</span>:output.css</div></pre></td></tr></table></figure>
 <p>也可以自动监视整个目录的变化并自动编译：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">sass</span> <span class="selector-tag">--watch</span> .<span class="selector-pseudo">:.</span></div></pre></td></tr></table></figure>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sass <span class="comment">--watch .:.</span></div></pre></td></tr></table></figure>
 <p>默认自动编译生成的 css 文件与 sass 文件同名。</p>
 <h1 id="三、输出样式"><a href="#三、输出样式" class="headerlink" title="三、输出样式"></a>三、输出样式</h1><p>sass 编译输出的 css 文件有四种样式：</p>
 <ul>
@@ -264,7 +326,7 @@
 <p> mixin 类似于javascript中的函数，mixin 有名字和参数，参数可以省略，定义 mixin 的格式如下：</p>
  <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">mixin</span> 名字 (参数<span class="number">1</span>，参数<span class="number">2</span>...) <span class="meta">&#123;......&#125;</span></div></pre></td></tr></table></figure>
 <p> 引用 mixin 时使用如下写法：</p>
- <figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">include</span> mixin的名字;</div></pre></td></tr></table></figure>
+ <figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@<span class="meta"><span class="meta-keyword">include</span> mixin的名字;</span></div></pre></td></tr></table></figure>
 <p> mixin 中的参数写法与 sass 变量写法一样，变量的赋值既可以按形参顺序赋值，也可以按参数名赋值，sass 允许通过语法 $name: value 的形式指定每个参数的值。。来看一个具体的例子：</p>
  <figure class="highlight scss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">mixin</span> alert (<span class="variable">$text-color</span>, <span class="variable">$background</span>) &#123;</div><div class="line"> <span class="attribute">color</span>: <span class="variable">$text-color</span>;</div><div class="line"> <span class="attribute">background-color</span>: <span class="variable">$background</span>;</div><div class="line">&#125;</div><div class="line"><span class="selector-class">.alert-warning</span> &#123;</div><div class="line"> @<span class="keyword">include</span> alert(<span class="number">#333</span>, <span class="number">#fff</span>lert &#123;</div><div class="line">	 <span class="attribute">padding</span>: <span class="number">15px</span>;</div><div class="line"> &#125;</div><div class="line"> <span class="selector-class">.alert</span> <span class="selector-tag">a</span> &#123;</div><div class="line">	 <span class="attribute">font-size</span>: <span class="number">20px</span>;</div><div class="line"> &#125;</div><div class="line"> <span class="selector-class">.alert-info</span> &#123;</div><div class="line">	 @<span class="keyword">extend</span> .alert;</div><div class="line">	 <span class="attribute">background-color</span>: <span class="number">#FFF</span>;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
 <pre><code>生成如下的 css：

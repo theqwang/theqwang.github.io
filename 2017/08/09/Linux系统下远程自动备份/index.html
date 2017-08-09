@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux系统下远程自动备份 | theqwang&#39;blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="公司的两个网站都部署在阿里云上，这两个网站以文章展示为主，之前也没有做过数据备份。随着文章数量的增加，实现数据的自动备份也就越来越重要了。后来这个工作就落到了我的头上，也感谢这次机会，让我重新拾起了《鸟哥的Linux私房菜》，狠狠加强了一把我的Linux基础。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux系统下远程自动备份">
+<meta property="og:url" content="https://theqwang.github.io/2017/08/09/Linux系统下远程自动备份/index.html">
+<meta property="og:site_name" content="theqwang'blog">
+<meta property="og:description" content="公司的两个网站都部署在阿里云上，这两个网站以文章展示为主，之前也没有做过数据备份。随着文章数量的增加，实现数据的自动备份也就越来越重要了。后来这个工作就落到了我的头上，也感谢这次机会，让我重新拾起了《鸟哥的Linux私房菜》，狠狠加强了一把我的Linux基础。">
+<meta property="og:updated_time" content="2017-08-09T03:23:13.426Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux系统下远程自动备份">
+<meta name="twitter:description" content="公司的两个网站都部署在阿里云上，这两个网站以文章展示为主，之前也没有做过数据备份。随着文章数量的增加，实现数据的自动备份也就越来越重要了。后来这个工作就落到了我的头上，也感谢这次机会，让我重新拾起了《鸟哥的Linux私房菜》，狠狠加强了一把我的Linux基础。">
+  
+    <link rel="alternative" href="/atom.xml" title="theqwang&#39;blog" type="application/atom+xml">
+  
+  
+    <link href="/favicon.ico" rel="icon" type="image/x-ico">
+  
+<!--   <link href="//fonts.useso.com/css?family=Lato:400,400italic" rel="stylesheet" type="text/css"> -->
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">theqwang&#39;blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">about</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://theqwang.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Linux系统下远程自动备份" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/09/Linux系统下远程自动备份/" class="article-date">
+  <time datetime="2017-08-09T00:32:40.000Z" itemprop="datePublished">2017-08-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux系统下远程自动备份
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>公司的两个网站都部署在阿里云上，这两个网站以文章展示为主，之前也没有做过数据备份。随着文章数量的增加，实现数据的自动备份也就越来越重要了。后来这个工作就落到了我的头上，也感谢这次机会，让我重新拾起了《鸟哥的Linux私房菜》，狠狠加强了一把我的Linux基础。<br><a id="more"></a></p>
+<h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h2><p>这里以自动备份网站的数据库和代码为例讲解我的实现思路。<br>要备份的网站部署在了阿里云服务器上，简称该服务器为A；备份服务器是我们公司的一台物理机，简称为B，备份的数据都要统一放在B上。</p>
+<h2 id="2-备份思路"><a href="#2-备份思路" class="headerlink" title="2.备份思路"></a>2.备份思路</h2><ol>
+<li>使用<strong>SSH</strong>实现主机B到A的免密码登录</li>
+<li>使用<strong>rsync</strong>实现代码的增量备份</li>
+<li>使用<strong>mysqldump+tar</strong>备份数据库，再通过<strong>scp</strong>把备份的数据库文件从A拷贝到备份主机B的指定位置并按时间命名，保留5天之内的数据库备份文件其余删除</li>
+<li>使用<strong>crontab</strong>实现定时备份</li>
+</ol>
+<h2 id="3-备份频率"><a href="#3-备份频率" class="headerlink" title="3. 备份频率"></a>3. 备份频率</h2><ul>
+<li>数据库每天备份一次，备份的时间点是每天<code>2:00</code></li>
+<li>代码每周备份一次，备份的时间点是每周的星期天<code>3:00</code></li>
+</ul>
+<h2 id="4-SSH免密码登录"><a href="#4-SSH免密码登录" class="headerlink" title="4. SSH免密码登录"></a>4. SSH免密码登录</h2><p>要把主机A上的数据定时备份到主机B上，要先实现SSH免密码登录。具体步骤：</p>
+<p>1) 用root登录B，生成SSH密钥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen</div></pre></td></tr></table></figure>
+<p>执行完该命令后，会在<code>/root/.ssh</code>目录下生成<code>id-rsa</code>、<code>id-rsa.pub</code>，其中<code>id-rsa</code>是私钥文件，<code>id-rsa.pub</code>是公钥文件。</p>
+<p>2) 把<code>id-rsa.pub</code>上传到A上</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp /root/.ssh/id_rsa<span class="selector-class">.pub</span>  root@A<span class="selector-class">.com</span>:/root/id_rsa.pub</div></pre></td></tr></table></figure>
+<p>3) 把公钥内容附件到<code>authorized_keys</code>文件中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// authorized_keys的路径是：/root/.ssh/authorized_keys，如果路径不存在，需要执行以下命令创建。</div><div class="line"></div><div class="line">mkdir -p /root/.ssh</div><div class="line">chmod 700 /root/.ssh</div><div class="line">touch /root/.ssh/authorized_keys</div><div class="line">chmod 600 /root/.ssh/authorized_keys</div><div class="line">cat /root/id_rsa.pub &gt;&gt; /root/.ssh/authorized_keys</div></pre></td></tr></table></figure>
+<p>注意：因为涉及到权限的问题，在A上也使用root登录；请一定要给<code>.ssh</code>和<code>authorized_keys</code>设置700和600的权限，不然用SSH登录时还是需要密码</p>
+<p>4) 验证SSH免密码登录是否成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -v root@A</div></pre></td></tr></table></figure>
+<h2 id="5-增量备份代码"><a href="#5-增量备份代码" class="headerlink" title="5.增量备份代码"></a>5.增量备份代码</h2><p>使用<strong>rsync</strong>增量备份代码。假设A上部署的项目路径是<code>/wwwXXXcom</code>， 把A上的代码备份到B的<code>/data/backup_code</code>目录下，在该目录下新建备份脚本文件<code>backup_code.sh</code>，在该文件中写入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line">rsync -avz --delete -e ssh root@A:/wwwXXXcom /data/backup_code</div></pre></td></tr></table></figure>
+<p><code>--delete</code>参数表示如果A上的某文件删除了，备份时B上也会删除对应文件</p>
+<p>给<code>backup_code.sh</code>增加执行权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x backup_code.sh</div></pre></td></tr></table></figure>
+<h2 id="6-备份数据库"><a href="#6-备份数据库" class="headerlink" title="6.备份数据库"></a>6.备份数据库</h2><p>备份数据库的思路是首先在主机A上使用<strong>mysqldump+tar</strong>把数据库备份到本地，然后通过<strong>scp</strong>把备份文件拷贝到主机B上。</p>
+<h3 id="6-1-在主机A上备份数据库"><a href="#6-1-在主机A上备份数据库" class="headerlink" title="6.1 在主机A上备份数据库"></a>6.1 在主机A上备份数据库</h3><p>假设在主机A上，数据库备份文件放在<code>/backup_origin</code>目录下，在该目录下新建数据库备份脚本<code>backup_origin.sh</code>，文件中写入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line"># 删除之前的数据库备份文件</div><div class="line">find /backup_origin -name &quot;DB_name.sql.gz&quot; -type f -exec rm &#123;&#125; \; &gt; /dev/null 2&gt;&amp;1</div><div class="line"></div><div class="line"># 备份数据库</div><div class="line">mysqldump -uroot -ppassword DB_name | gzip &gt; /backup_origin/DB_name.sql.gz</div></pre></td></tr></table></figure>
+<p>给<code>backup_origin.sh</code>增加执行权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x backup_origin.sh</div></pre></td></tr></table></figure>
+<h3 id="6-2-把备份文件拷贝到主机B"><a href="#6-2-把备份文件拷贝到主机B" class="headerlink" title="6.2 把备份文件拷贝到主机B"></a>6.2 把备份文件拷贝到主机B</h3><p>假设数据库备份文件放在主机B的<code>/data/backup</code>目录下 ，在该目录下新建脚本文件<code>backup_DB.sh</code>，文件中写入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line">time=`date +%Y-%m-%d_%H:%M:%S`</div><div class="line"></div><div class="line"><span class="comment"># 通过SSH调用主机A上的数据库备份脚本</span></div><div class="line">/usr/bin/ssh root@A <span class="string">"/backup_origin/backup_origin.sh"</span></div><div class="line"></div><div class="line"><span class="comment"># 通过scp把A上新生成的数据库备份文件拷贝到B</span></div><div class="line">scp root@A:/backup_origin/DB_name.sql.gz /data/backup/DB_name<span class="variable">$time</span>.sql.gz</div><div class="line"></div><div class="line"><span class="comment"># 删除5天之前的备份文件</span></div><div class="line">find /data/backup -name <span class="string">"DB_name*.sql.gz"</span> -type f -mtime +5 -exec rm &#123;&#125; \; &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>给<code>backup_DB.sh</code>增加执行权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x backup_DB.sh</div></pre></td></tr></table></figure>
+<h2 id="7-定时备份"><a href="#7-定时备份" class="headerlink" title="7.定时备份"></a>7.定时备份</h2><p>使用<strong>crontab</strong>实现定时备份功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">crontab -e</div></pre></td></tr></table></figure>
+<p>在主机B上输入以上命令编辑<code>crontab</code>命令的内容，键入以下内容实现备份脚本的定时执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 备份数据库，每天2:00执行</div><div class="line">0 2 * * * bash /data/backup/backup_DB.sh</div><div class="line"></div><div class="line"># 备份项目代码，每周的周天3:00执行</div><div class="line">0 3 * * 0 bash /data/backup_code/backup_code.sh</div></pre></td></tr></table></figure>
+<h2 id="8-最后"><a href="#8-最后" class="headerlink" title="8. 最后"></a>8. 最后</h2><p>至此，我们就实现了数据的远程自动备份。但是，数据还不是绝对的安全，现在数据都备份到了主机B上，但是当主机B出现问题时，备份也就没有意义了。更近一步，可以在主机B上做<strong>RAID5</strong>或者把主机B上的备份数据上传到云上。条件所限，这些措施也就没有做，以后做了我会再来补充。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://theqwang.github.io/2017/08/09/Linux系统下远程自动备份/" data-id="cj64c4h6n0000ngmlm3u0vuba" class="article-share-link">Share</a>
+      
+        <a href="https://theqwang.github.io/2017/08/09/Linux系统下远程自动备份/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/03/17/在多台电脑间使用hexo/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">在多台电脑间使用hexo</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CSS/">CSS</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优化/">优化</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/Linux系统下远程自动备份/">Linux系统下远程自动备份</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/17/在多台电脑间使用hexo/">在多台电脑间使用hexo</a>
+          </li>
+        
+          <li>
+            <a href="/2016/03/17/《高性能网站建设进阶指南》总结/">《高性能网站建设进阶指南》总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/01/SASS入门/">SASS学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/08/不使用-border-radius-实现圆角/">不使用 border-radius 实现圆角</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 theqwang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'theqwang';
+  
+  var disqus_url = 'https://theqwang.github.io/2017/08/09/Linux系统下远程自动备份/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
